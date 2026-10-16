@@ -3,11 +3,164 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Faida - Know Your Money</title>
+  <title>Faida - Profit Calculator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f7f2;
+      color: #183b2b;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 30px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      text-align: center;
+      color: #16834a;
+      margin-bottom: 8px;
+    }
+
+    .intro {
+      text-align: center;
+      color: #607568;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 16px;
+      margin-bottom: 7px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd8ce;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 22px;
+      background: #16834a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #116638;
+    }
+
+    #result {
+      display: none;
+      margin-top: 22px;
+      padding: 18px;
+      background: #e8f7ed;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    #profit {
+      font-size: 28px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    .note {
+      font-size: 12px;
+      color: #607568;
+      text-align: center;
+      margin-top: 22px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome to Faida! 🇰🇪</h1>
-  <p>Every shilling counts.</p>
-  <p>Understand your costs. Discover your profit. Grow your hustle.</p>
+  <main class="container">
+    <h1>Faida 🇰🇪</h1>
+    <p class="intro">Every shilling counts. Know your profit.</p>
+
+    <label for="sales">Total sales (KSh)</label>
+    <input type="number" id="sales" min="0" step="0.01" placeholder="e.g. 5000">
+
+    <label for="costs">Cost of goods (KSh)</label>
+    <input type="number" id="costs" min="0" step="0.01" placeholder="e.g. 2500">
+
+    <label for="expenses">Other expenses (KSh)</label>
+    <input type="number" id="expenses" min="0" step="0.01" placeholder="e.g. 500">
+
+    <button onclick="calculateProfit()">Calculate my profit</button>
+
+    <section id="result" aria-live="polite">
+      <h2 id="message">Your result</h2>
+      <p id="profit"></p>
+      <p id="breakdown"></p>
+    </section>
+
+    <p class="note">A simple tool for Kenya's small businesses.</p>
+  </main>
+
+  <script>
+    function calculateProfit() {
+      const salesInput = document.getElementById("sales");
+      const costsInput = document.getElementById("costs");
+      const expensesInput = document.getElementById("expenses");
+
+      const sales = Number(salesInput.value);
+      const costs = Number(costsInput.value);
+      const expenses = Number(expensesInput.value);
+
+      if (
+        salesInput.value === "" ||
+        costsInput.value === "" ||
+        expensesInput.value === "" ||
+        sales < 0 ||
+        costs < 0 ||
+        expenses < 0
+      ) {
+        alert("Please enter all three amounts. Use zero if you have no expenses in a category.");
+        return;
+      }
+
+      const profit = sales - costs - expenses;
+      const money = amount =>
+        "KSh " + amount.toLocaleString("en-KE", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+
+      document.getElementById("message").textContent =
+        profit > 0 ? "You're making a profit! 🎉" :
+        profit < 0 ? "You're making a loss." :
+        "You've broken even.";
+
+      document.getElementById("profit").textContent = money(profit);
+      document.getElementById("breakdown").textContent =
+        "Sales: " + money(sales) +
+        " | Total costs and expenses: " + money(costs + expenses);
+
+      document.getElementById("result").style.display = "block";
+      document.getElementById("profit").style.color =
+        profit < 0 ? "#b42318" : "#16834a";
+    }
+  </script>
 </body>
 </html>
